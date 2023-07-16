@@ -1,1 +1,66 @@
+<---------------------------------------------------Import packages---------------------------------------------------------------->
+import mysql.connector
 
+<----------------------------------------------Lets Create Connection to the MySQL Database---------------------------------------------->
+
+import mysql.connector
+
+mydata = mysql.connector.connect(
+  host="127.0.0.1",
+  user="root",
+  password="Sabari@12345",
+  autocommit=True,
+)
+myfile = mydata.cursor()
+myfile.execute("CREATE DATABASE IF NOT EXISTS pulsedata")
+
+<--------------------------------Creating Table in the MySQL and inserting  CSV and rpeating the Process--------------------------------->
+
+myfile.execute("USE pulsedata;")
+myfile.execute("CREATE TABLE IF NOT EXISTS aggregated_transaction (State VARCHAR(100), Year INT, Quater INT, Transaction_type VARCHAR(100), Transaction_count INT, Transaction_amount FLOAT);")
+
+agg_trans_tuples = [tuple(row) for row in agg_trans.itertuples(index=False)]
+insert_query = "INSERT IGNORE INTO aggregated_transaction (State, Year, Quater, Transaction_type, Transaction_count, Transaction_amount) VALUES (%s, %s, %s, %s, %s, %s);"
+myfile.executemany(insert_query, agg_trans_tuples)
+mydata.commit()
+#-------------------------------------------------------------------------------->
+myfile.execute("USE pulsedata;")
+myfile.execute("CREATE TABLE IF NOT EXISTS aggregated_user (State VARCHAR(100), Year INT, Quater INT, Brand VARCHAR(100), Brand_count INT, Brand_percentage FLOAT);")
+
+agg_user_tuples = [tuple(row) for row in agg_user.itertuples(index=False)]
+insert_query = "INSERT IGNORE INTO aggregated_user (State, Year, Quater, Brand, Brand_count, Brand_percentage) VALUES (%s, %s, %s, %s, %s, %s);"
+myfile.executemany(insert_query, agg_user_tuples)
+mydata.commit()
+#-------------------------------------------------------------------------------->
+myfile.execute("USE pulsedata;")
+myfile.execute("CREATE TABLE IF NOT EXISTS map_transaction (State VARCHAR(100), Year INT, Quater INT, District VARCHAR(100), Transaction_count INT, Transaction_amount FLOAT);")
+
+map_trans_tuples = [tuple(row) for row in map_trans.itertuples(index=False)]
+insert_query = "INSERT IGNORE INTO map_transaction (State, Year, Quater, District, Transaction_count, Transaction_amount) VALUES (%s, %s, %s, %s, %s, %s);"
+myfile.executemany(insert_query, map_trans_tuples)
+mydata.commit()
+#---------------------------------------------------------------------------------->
+myfile.execute("USE pulsedata;")
+myfile.execute("CREATE TABLE IF NOT EXISTS map_userfile (State VARCHAR(100), Year INT, Quater INT, District VARCHAR(100), Registered_user INT, App_opening INT);")
+
+insert_query = "INSERT IGNORE INTO map_userfile (State, Year, Quater, District, Registered_user, app_opening) VALUES (%s, %s, %s, %s, %s, %s);"
+map_user_tuples = [tuple(row) for row in map_user.itertuples(index=False)]
+myfile.executemany(insert_query, map_user_tuples)
+mydata.commit()
+#------------------------------------------------------------------------------------->
+myfile.execute("USE pulsedata;")
+myfile.execute("CREATE TABLE IF NOT EXISTS top_transaction (State VARCHAR(100), Year INT, Quater INT, District VARCHAR(100), Transaction_count INT, Transaction_amount FLOAT);")
+
+top_trans_tuples = [tuple(row) for row in top_trans.itertuples(index=False)]
+insert_query = "INSERT IGNORE INTO top_transaction (State, Year, Quater, District, Transaction_count, Transaction_amount) VALUES (%s, %s, %s, %s, %s, %s);"
+myfile.executemany(insert_query, top_trans_tuples)
+mydata.commit()
+#---------------------------------------------------------------------------------------->
+myfile.execute("USE pulsedata;")
+myfile.execute("CREATE TABLE IF NOT EXISTS top_userfile (State VARCHAR(100), Year INT, Quater INT, District VARCHAR(100), Registeredusers INT);")
+
+insert_query = "INSERT IGNORE INTO top_userfile (State, Year, Quater, District, Registeredusers) VALUES (%s, %s, %s, %s, %s);"
+top_user_tuples = [tuple(row) for row in top_user.itertuples(index=False)]
+myfile.executemany(insert_query, top_user_tuples)
+mydata.commit()
+#-----------------------------------------End------------------------------------------------->
